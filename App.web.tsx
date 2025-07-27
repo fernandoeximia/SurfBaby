@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   Provider as PaperProvider,
   DefaultTheme,
@@ -13,7 +8,6 @@ import {
   Title,
   Paragraph,
   Button,
-  FAB,
   Snackbar,
 } from 'react-native-paper';
 
@@ -34,12 +28,7 @@ function App(): React.JSX.Element {
 
   return (
     <PaperProvider theme={theme}>
-      <SafeAreaView style={styles.container}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor={theme.colors.primary}
-        />
-        
+      <View style={styles.container}>
         <Appbar.Header>
           <Appbar.Content title="SurfBaby" subtitle="Hello World App" />
         </Appbar.Header>
@@ -71,15 +60,10 @@ function App(): React.JSX.Element {
               <Paragraph>• React Native Paper</Paragraph>
               <Paragraph>• TypeScript</Paragraph>
               <Paragraph>• Tema personalizado</Paragraph>
+              <Paragraph>• Versão Web funcionando!</Paragraph>
             </Card.Content>
           </Card>
         </View>
-
-        <FAB
-          style={styles.fab}
-          icon="plus"
-          onPress={() => console.log('FAB pressionado!')}
-        />
 
         <Snackbar
           visible={visible}
@@ -90,9 +74,9 @@ function App(): React.JSX.Element {
               onDismissSnackBar();
             },
           }}>
-          🏄‍♂️ SurfBaby está funcionando perfeitamente!
+          🏄‍♂️ SurfBaby está funcionando perfeitamente na web!
         </Snackbar>
-      </SafeAreaView>
+      </View>
     </PaperProvider>
   );
 }
@@ -101,6 +85,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    minHeight: '100vh',
   },
   content: {
     flex: 1,
@@ -124,13 +109,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 8,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#FF9800',
   },
 });
 
