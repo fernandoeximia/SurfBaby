@@ -11,17 +11,17 @@ const MapComponent: React.FC<MapComponentProps> = ({
   width = '100%', 
   height = 400 
 }) => {
-  // Coordenadas da Praia do Forte, Cabo Frio, RJ
+  // Coordenadas da Praia do Forte, Cabo Frio, RJ - ajustado para mostrar a orla
   const praiaDoForte = {
-    latitude: -22.8808,
-    longitude: -42.0186,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
+    latitude: -22.8795,
+    longitude: -42.0175,
+    latitudeDelta: 0.008,
+    longitudeDelta: 0.008,
   };
 
   const markerCoordinate = {
-    latitude: -22.8808,
-    longitude: -42.0186,
+    latitude: -22.8795,
+    longitude: -42.0175,
   };
 
   return (
@@ -30,7 +30,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={praiaDoForte}
-        mapType="hybrid"
+        mapType="standard"
         showsUserLocation={true}
         showsMyLocationButton={true}
         customMapStyle={[

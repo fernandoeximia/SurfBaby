@@ -26,16 +26,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
         await loader.load();
         
         if (mapRef.current && !mapInstanceRef.current) {
-          // Coordenadas da Praia do Forte, Cabo Frio, RJ
+          // Coordenadas da Praia do Forte, Cabo Frio, RJ - ajustado para mostrar a orla
           const praiaDoForte = {
-            lat: -22.8808,
-            lng: -42.0186
+            lat: -22.8795,
+            lng: -42.0175
           };
 
           const map = new google.maps.Map(mapRef.current, {
             center: praiaDoForte,
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.HYBRID,
+            zoom: 16,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: [
               {
                 featureType: 'water',
