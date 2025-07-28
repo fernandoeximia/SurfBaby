@@ -10,6 +10,7 @@ import {
   Button,
   Snackbar,
 } from 'react-native-paper';
+import MapComponent from './components/MapComponent.web';
 
 const theme = {
   ...DefaultTheme,
@@ -30,7 +31,7 @@ function App(): React.JSX.Element {
     <PaperProvider theme={theme}>
       <View style={styles.container}>
         <Appbar.Header>
-          <Appbar.Content title="SurfBaby" subtitle="Hello World App" />
+          <Appbar.Content title="SurfBaby" subtitle="Praia do Forte - Cabo Frio" />
         </Appbar.Header>
 
         <View style={styles.content}>
@@ -38,8 +39,8 @@ function App(): React.JSX.Element {
             <Card.Content>
               <Title style={styles.title}>🏄‍♂️ Bem-vindo ao SurfBaby!</Title>
               <Paragraph style={styles.paragraph}>
-                Este é um Hello World usando React Native Paper. 
-                O SurfBaby está pronto para navegar nas ondas do desenvolvimento!
+                Descubra a Praia do Forte em Cabo Frio - um paraíso para surfistas, 
+                kitesurfistas e amantes dos esportes aquáticos!
               </Paragraph>
             </Card.Content>
             <Card.Actions>
@@ -48,19 +49,28 @@ function App(): React.JSX.Element {
                 onPress={onToggleSnackBar}
                 style={styles.button}
               >
-                Mostrar Mensagem
+                Ver Informações
               </Button>
             </Card.Actions>
           </Card>
 
+          <Card style={styles.mapCard}>
+            <Card.Content>
+              <Title style={styles.mapTitle}>📍 Localização da Praia</Title>
+              <View style={styles.mapContainer}>
+                <MapComponent height={300} />
+              </View>
+            </Card.Content>
+          </Card>
+
           <Card style={styles.card}>
             <Card.Content>
-              <Title>🌊 Recursos do App</Title>
-              <Paragraph>• React Native 0.80.2</Paragraph>
-              <Paragraph>• React Native Paper</Paragraph>
-              <Paragraph>• TypeScript</Paragraph>
-              <Paragraph>• Tema personalizado</Paragraph>
-              <Paragraph>• Versão Web funcionando!</Paragraph>
+              <Title>🌊 Por que a Praia do Forte?</Title>
+              <Paragraph>• Ventos constantes ideais para kitesurf</Paragraph>
+              <Paragraph>• Ondas perfeitas para surf</Paragraph>
+              <Paragraph>• Praia extensa com muito espaço</Paragraph>
+              <Paragraph>• Fácil acesso e infraestrutura</Paragraph>
+              <Paragraph>• Comunidade ativa de surfistas</Paragraph>
             </Card.Content>
           </Card>
         </View>
@@ -74,7 +84,7 @@ function App(): React.JSX.Element {
               onDismissSnackBar();
             },
           }}>
-          🏄‍♂️ SurfBaby está funcionando perfeitamente na web!
+          🏄‍♂️ Praia do Forte: O spot perfeito para seu próximo surf!
         </Snackbar>
       </View>
     </PaperProvider>
@@ -95,12 +105,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     elevation: 4,
   },
+  mapCard: {
+    marginBottom: 16,
+    elevation: 4,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#00BCD4',
     textAlign: 'center',
     marginBottom: 8,
+  },
+  mapTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#00BCD4',
+    marginBottom: 12,
   },
   paragraph: {
     fontSize: 16,
@@ -109,6 +129,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 8,
+  },
+  mapContainer: {
+    borderRadius: 8,
+    overflow: 'hidden',
   },
 });
 
