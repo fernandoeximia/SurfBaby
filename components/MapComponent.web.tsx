@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
 import { Loader } from '@googlemaps/js-api-loader';
+import CompassRose from './CompassRose.web';
 
 interface MapComponentProps {
   width?: number | string;
@@ -72,7 +72,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
   }, []);
 
   return (
-    <View style={[styles.container, { width, height }]}>
+    <div style={{ position: 'relative', width, height }}>
       <div
         ref={mapRef}
         style={{
@@ -82,24 +82,10 @@ const MapComponent: React.FC<MapComponentProps> = ({
           overflow: 'hidden'
         }}
       />
-    </View>
+      <CompassRose size={100} position="top-right" />
+    </div>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 8,
-    overflow: 'hidden',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-});
 
 export default MapComponent;
 

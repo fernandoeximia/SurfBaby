@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, StyleSheet } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import CompassRose from './CompassRose';
 
 interface MapComponentProps {
   width?: number | string;
@@ -53,6 +54,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
       >
         {/* Sem marcadores para visual limpo */}
       </MapView>
+      <CompassRose size={80} position="top-right" />
     </View>
   );
 };
