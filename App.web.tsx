@@ -58,7 +58,7 @@ function App(): React.JSX.Element {
             <Card.Content>
               <Title style={styles.mapTitle}>📍 Localização da Praia</Title>
               <View style={styles.mapContainer}>
-                <MapComponent height={400} />
+                <MapComponent height={800} />
               </View>
             </Card.Content>
           </Card>
