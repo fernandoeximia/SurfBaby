@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import CompassRose from './CompassRose';
+import WindArrows from './WindArrows';
 
 interface MapComponentProps {
   width?: number | string;
@@ -23,7 +24,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
   return (
     <View style={[styles.container, { width, height }]}>
       <MapView
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={coordenadas}
         mapType="standard"
@@ -51,10 +51,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
             stylers: [{ visibility: 'off' }]
           }
         ]}
-      >
-        {/* Sem marcadores para visual limpo */}
-      </MapView>
+      />
+      
+      {/* Rosa dos ventos */}
       <CompassRose size={80} position="top-right" />
+      
+      {/* Setas de vento animadas */}
+      <WindArrows
+        lat={-22.8948315}
+        lng={-42.0285161}
+        mapWidth={typeof width === 'number' ? width : 400}
+        mapHeight={typeof height === 'number' ? height : 400}
+      />
     </View>
   );
 };

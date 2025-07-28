@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import CompassRose from './CompassRose.web';
+import WindArrows from './WindArrows.web';
 
 interface MapComponentProps {
   width?: number | string;
@@ -83,6 +84,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
         }}
       />
       <CompassRose size={100} position="top-right" />
+      
+      {/* Setas de vento animadas */}
+      <WindArrows
+        lat={-22.8948315}
+        lng={-42.0285161}
+        mapWidth={typeof width === 'number' ? width : 1000}
+        mapHeight={typeof height === 'number' ? height : 800}
+      />
     </div>
   );
 };
