@@ -198,14 +198,8 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
   const speedKmh = StormGlassService.msToKmh(windData.speed);
   const cardinal = StormGlassService.degreesToCardinal(windData.direction);
 
-  // Posições das setas no mapa (distribuídas)
-  const arrowPositions = [
-    { x: mapWidth * 0.2, y: mapHeight * 0.3 },
-    { x: mapWidth * 0.5, y: mapHeight * 0.2 },
-    { x: mapWidth * 0.8, y: mapHeight * 0.4 },
-    { x: mapWidth * 0.3, y: mapHeight * 0.7 },
-    { x: mapWidth * 0.7, y: mapHeight * 0.6 },
-  ];
+  // Posição única da seta no mar próximo à praia (área azul do mapa)
+  const arrowPosition = { x: mapWidth * 0.82, y: mapHeight * 0.35 };
 
   return (
     <>
@@ -243,18 +237,15 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
         </div>
       </div>
 
-      {/* Setas de vento distribuídas no mapa */}
-      {arrowPositions.map((pos, index) => (
-        <WindArrow
-          key={index}
-          direction={windData.direction}
-          speed={windData.speed}
-          intensity={intensity}
-          x={pos.x}
-          y={pos.y}
-          size={40 + windData.speed * 2} // Tamanho varia com a velocidade
-        />
-      ))}
+      {/* Seta de vento única e maior */}
+      <WindArrow
+        direction={windData.direction}
+        speed={windData.speed}
+        intensity={intensity}
+        x={arrowPosition.x}
+        y={arrowPosition.y}
+        size={80 + windData.speed * 3} // Seta maior, tamanho baseado na velocidade
+      />
     </>
   );
 };
