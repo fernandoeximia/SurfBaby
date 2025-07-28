@@ -18,38 +18,37 @@ const CompassRose: React.FC<CompassRoseProps> = ({
     const baseStyle: React.CSSProperties = {
       position: 'absolute',
       zIndex: 1000,
-      backgroundColor: 'transparent', // Fundo transparente
+      backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fundo semi-transparente para visibilidade
       borderRadius: '50%',
       padding: '4px',
       cursor: isDragging ? 'grabbing' : 'grab',
       userSelect: 'none',
       transition: isDragging ? 'none' : 'all 0.2s ease',
+      border: '1px solid rgba(0,0,0,0.2)', // Borda sutil para visibilidade
     };
 
-    let initialX = 0, initialY = 0;
-    
-    switch (position) {
-      case 'top-left':
-        initialX = 20; initialY = 20;
-        break;
-      case 'top-right':
-        initialX = -20 - size; initialY = 20;
-        break;
-      case 'bottom-left':
-        initialX = 20; initialY = -20 - size;
-        break;
-      case 'bottom-right':
-        initialX = -20 - size; initialY = -20 - size;
-        break;
+    // Se já foi movido, usar posição atual
+    if (currentPosition.x !== 0 || currentPosition.y !== 0) {
+      return {
+        ...baseStyle,
+        left: currentPosition.x,
+        top: currentPosition.y,
+      };
     }
 
-    return {
-      ...baseStyle,
-      left: currentPosition.x || initialX,
-      top: currentPosition.y || initialY,
-      right: position.includes('right') && !currentPosition.x ? '20px' : 'auto',
-      bottom: position.includes('bottom') && !currentPosition.y ? '20px' : 'auto',
-    };
+    // Posição inicial baseada na prop position
+    switch (position) {
+      case 'top-left':
+        return { ...baseStyle, top: '20px', left: '20px' };
+      case 'top-right':
+        return { ...baseStyle, top: '20px', right: '20px' };
+      case 'bottom-left':
+        return { ...baseStyle, bottom: '20px', left: '20px' };
+      case 'bottom-right':
+        return { ...baseStyle, bottom: '20px', right: '20px' };
+      default:
+        return { ...baseStyle, top: '20px', right: '20px' };
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -111,15 +110,15 @@ const CompassRose: React.FC<CompassRoseProps> = ({
         viewBox="0 0 100 100"
         style={{ 
           display: 'block',
-          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))', // Sombra para melhor visibilidade
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))', // Sombra mais forte
         }}
       >
-        {/* Círculo externo com fundo semi-transparente */}
+        {/* Círculo externo com fundo mais visível */}
         <circle
           cx="50"
           cy="50"
           r="48"
-          fill="rgba(255, 255, 255, 0.1)"
+          fill="rgba(255, 255, 255, 0.3)"
           stroke="#333"
           strokeWidth="2"
         />
@@ -130,7 +129,7 @@ const CompassRose: React.FC<CompassRoseProps> = ({
           cy="50"
           r="35"
           fill="none"
-          stroke="rgba(102, 102, 102, 0.6)"
+          stroke="rgba(102, 102, 102, 0.8)"
           strokeWidth="1"
           strokeDasharray="2,2"
         />
@@ -165,26 +164,26 @@ const CompassRose: React.FC<CompassRoseProps> = ({
         
         {/* Nordeste */}
         <g>
-          <line x1="50" y1="50" x2="75" y2="25" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
-          <text x="78" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">NE</text>
+          <line x1="50" y1="50" x2="75" y2="25" stroke="rgba(102, 102, 102, 1)" strokeWidth="1" />
+          <text x="78" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 1)">NE</text>
         </g>
         
         {/* Noroeste */}
         <g>
-          <line x1="50" y1="50" x2="25" y2="25" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
-          <text x="22" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">NO</text>
+          <line x1="50" y1="50" x2="25" y2="25" stroke="rgba(102, 102, 102, 1)" strokeWidth="1" />
+          <text x="22" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 1)">NO</text>
         </g>
         
         {/* Sudeste */}
         <g>
-          <line x1="50" y1="50" x2="75" y2="75" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
-          <text x="78" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">SE</text>
+          <line x1="50" y1="50" x2="75" y2="75" stroke="rgba(102, 102, 102, 1)" strokeWidth="1" />
+          <text x="78" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 1)">SE</text>
         </g>
         
         {/* Sudoeste */}
         <g>
-          <line x1="50" y1="50" x2="25" y2="75" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
-          <text x="22" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">SO</text>
+          <line x1="50" y1="50" x2="25" y2="75" stroke="rgba(102, 102, 102, 1)" strokeWidth="1" />
+          <text x="22" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 1)">SO</text>
         </g>
         
         {/* Centro */}
@@ -205,7 +204,7 @@ const CompassRose: React.FC<CompassRoseProps> = ({
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke="rgba(153, 153, 153, 0.6)"
+              stroke="rgba(153, 153, 153, 0.8)"
               strokeWidth="1"
             />
           );
