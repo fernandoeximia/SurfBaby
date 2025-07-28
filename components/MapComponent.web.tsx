@@ -26,16 +26,23 @@ const MapComponent: React.FC<MapComponentProps> = ({
         await loader.load();
         
         if (mapRef.current && !mapInstanceRef.current) {
-          // Coordenadas da Praia do Forte, Cabo Frio, RJ - ajustado para mostrar a orla
-          const praiaDoForte = {
-            lat: -22.8795,
-            lng: -42.0175
+          // Coordenadas específicas fornecidas pelo usuário
+          const coordenadas = {
+            lat: -22.8948315,
+            lng: -42.0285161
           };
 
           const map = new google.maps.Map(mapRef.current, {
-            center: praiaDoForte,
-            zoom: 16,
+            center: coordenadas,
+            zoom: 15.76,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true, // Remove controles padrão para visual mais limpo
+            zoomControl: false,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
             styles: [
               {
                 featureType: 'water',
@@ -46,47 +53,13 @@ const MapComponent: React.FC<MapComponentProps> = ({
                 featureType: 'landscape.natural',
                 elementType: 'geometry',
                 stylers: [{ color: '#E8F5E8' }]
+              },
+              {
+                featureType: 'poi',
+                stylers: [{ visibility: 'off' }] // Remove pontos de interesse para visual mais limpo
               }
             ]
           });
-
-          // Marcador na Praia do Forte
-          const marker = new google.maps.Marker({
-            position: praiaDoForte,
-            map: map,
-            title: '🏄‍♂️ Praia do Forte - Cabo Frio',
-            icon: {
-              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="20" cy="20" r="18" fill="#00BCD4" stroke="#fff" stroke-width="2"/>
-                  <text x="20" y="26" text-anchor="middle" fill="white" font-size="16">🏄‍♂️</text>
-                </svg>
-              `),
-              scaledSize: new google.maps.Size(40, 40),
-              anchor: new google.maps.Point(20, 20)
-            }
-          });
-
-          // Info Window com informações da praia
-          const infoWindow = new google.maps.InfoWindow({
-            content: `
-              <div style="padding: 10px; font-family: Arial, sans-serif;">
-                <h3 style="color: #00BCD4; margin: 0 0 8px 0;">🏄‍♂️ Praia do Forte</h3>
-                <p style="margin: 4px 0;"><strong>📍 Local:</strong> Cabo Frio, RJ</p>
-                <p style="margin: 4px 0;"><strong>🌊 Ideal para:</strong> Surf, kitesurf e windsurf</p>
-                <p style="margin: 4px 0;"><strong>🏖️ Características:</strong> Praia extensa com ventos constantes</p>
-                <p style="margin: 4px 0;"><strong>🚗 Acesso:</strong> Fácil acesso de carro</p>
-              </div>
-            `
-          });
-
-          // Abrir info window ao clicar no marcador
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
-
-          // Abrir automaticamente ao carregar
-          infoWindow.open(map, marker);
 
           mapInstanceRef.current = map;
         }

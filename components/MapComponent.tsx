@@ -11,17 +11,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
   width = '100%', 
   height = 400 
 }) => {
-  // Coordenadas da Praia do Forte, Cabo Frio, RJ - ajustado para mostrar a orla
-  const praiaDoForte = {
-    latitude: -22.8795,
-    longitude: -42.0175,
-    latitudeDelta: 0.008,
-    longitudeDelta: 0.008,
-  };
-
-  const markerCoordinate = {
-    latitude: -22.8795,
-    longitude: -42.0175,
+  // Coordenadas específicas fornecidas pelo usuário
+  const coordenadas = {
+    latitude: -22.8948315,
+    longitude: -42.0285161,
+    latitudeDelta: 0.006, // Ajustado para zoom 15.76
+    longitudeDelta: 0.006,
   };
 
   return (
@@ -29,10 +24,16 @@ const MapComponent: React.FC<MapComponentProps> = ({
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={praiaDoForte}
+        initialRegion={coordenadas}
         mapType="standard"
-        showsUserLocation={true}
-        showsMyLocationButton={true}
+        showsUserLocation={false}
+        showsMyLocationButton={false}
+        showsCompass={false}
+        showsScale={false}
+        showsBuildings={false}
+        showsTraffic={false}
+        showsIndoors={false}
+        showsPointsOfInterest={false}
         customMapStyle={[
           {
             featureType: 'water',
@@ -43,15 +44,14 @@ const MapComponent: React.FC<MapComponentProps> = ({
             featureType: 'landscape.natural',
             elementType: 'geometry',
             stylers: [{ color: '#E8F5E8' }]
+          },
+          {
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }]
           }
         ]}
       >
-        <Marker
-          coordinate={markerCoordinate}
-          title="🏄‍♂️ Praia do Forte"
-          description="Cabo Frio, RJ - Ideal para surf, kitesurf e windsurf"
-          pinColor="#00BCD4"
-        />
+        {/* Sem marcadores para visual limpo */}
       </MapView>
     </View>
   );
