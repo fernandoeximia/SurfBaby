@@ -129,6 +129,7 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
   const [windData, setWindData] = useState<WindData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWindArrows, setShowWindArrows] = useState(true); // Estado para toggle
 
   useEffect(() => {
     const fetchWindData = async () => {
@@ -198,8 +199,19 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
   const speedKmh = StormGlassService.msToKmh(windData.speed);
   const cardinal = StormGlassService.degreesToCardinal(windData.direction);
 
-  // Posição única da seta no mar próximo à praia (área azul do mapa)
-  const arrowPosition = { x: mapWidth * 0.82, y: mapHeight * 0.35 };
+  // Múltiplas posições das setas distribuídas por todo o mapa
+  const arrowPositions = [
+    { x: mapWidth * 0.15, y: mapHeight * 0.25 },
+    { x: mapWidth * 0.35, y: mapHeight * 0.15 },
+    { x: mapWidth * 0.55, y: mapHeight * 0.20 },
+    { x: mapWidth * 0.75, y: mapHeight * 0.30 },
+    { x: mapWidth * 0.85, y: mapHeight * 0.45 },
+    { x: mapWidth * 0.25, y: mapHeight * 0.50 },
+    { x: mapWidth * 0.45, y: mapHeight * 0.60 },
+    { x: mapWidth * 0.65, y: mapHeight * 0.70 },
+    { x: mapWidth * 0.80, y: mapHeight * 0.80 },
+    { x: mapWidth * 0.20, y: mapHeight * 0.75 },
+  ];
 
   return (
     <>
@@ -213,21 +225,41 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
         `}
       </style>
       
-      {/* Informações do vento */}
+      {/* Informações do vento com botão toggle */}
       <div style={{
         position: 'absolute',
         top: '10px',
         left: '10px',
-        background: 'rgba(0,0,0,0.8)',
-        color: 'white',
+        backgroundColor: 'rgba(0,0,0,0.8)',
         padding: '12px',
         borderRadius: '8px',
-        fontSize: '12px',
-        zIndex: 1000,
         minWidth: '200px',
+        zIndex: 1000,
+        color: 'white',
+        fontSize: '12px'
       }}>
-        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-          🌬️ Vento Atual
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: '8px'
+        }}>
+          <div style={{ fontWeight: 'bold' }}>🌬️ Vento Atual</div>
+          <button
+            onClick={() => setShowWindArrows(!showWindArrows)}
+            style={{
+              backgroundColor: showWindArrows ? '#00BCD4' : '#666',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              fontSize: '10px',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s'
+            }}
+          >
+            {showWindArrows ? 'Ocultar' : 'Mostrar'}
+          </button>
         </div>
         <div>Direção: {cardinal} ({windData.direction}°)</div>
         <div>Velocidade: {speedKmh.toFixed(1)} km/h</div>
@@ -237,15 +269,18 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
         </div>
       </div>
 
-      {/* Seta de vento única e maior */}
-      <WindArrow
-        direction={windData.direction}
-        speed={windData.speed}
-        intensity={intensity}
-        x={arrowPosition.x}
-        y={arrowPosition.y}
-        size={80 + windData.speed * 3} // Seta maior, tamanho baseado na velocidade
-      />
+      {/* Múltiplas setas de vento distribuídas - condicionadas ao toggle */}
+      {showWindArrows && arrowPositions.map((pos, index) => (
+        <WindArrow
+          key={index}
+          direction={windData.direction}
+          speed={windData.speed}
+          intensity={intensity}
+          x={pos.x}
+          y={pos.y}
+          size={50 + windData.speed * 2} // Tamanho médio baseado na velocidade
+        />
+      ))}
     </>
   );
 };

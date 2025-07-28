@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import Svg, { Line, Polygon } from 'react-native-svg';
 import StormGlassService, { WindData } from '../services/stormGlassApi';
 
@@ -134,6 +134,7 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
   const [windData, setWindData] = useState<WindData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWindArrows, setShowWindArrows] = useState(true); // Estado para toggle
 
   useEffect(() => {
     const fetchWindData = async () => {
@@ -183,14 +184,38 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
   const speedKmh = StormGlassService.msToKmh(windData.speed);
   const cardinal = StormGlassService.degreesToCardinal(windData.direction);
 
-  // Posição única da seta no mar próximo à praia (área azul do mapa)
-  const arrowPosition = { x: mapWidth * 0.82, y: mapHeight * 0.35 };
+  // Múltiplas posições das setas distribuídas por todo o mapa
+  const arrowPositions = [
+    { x: mapWidth * 0.15, y: mapHeight * 0.25 },
+    { x: mapWidth * 0.35, y: mapHeight * 0.15 },
+    { x: mapWidth * 0.55, y: mapHeight * 0.20 },
+    { x: mapWidth * 0.75, y: mapHeight * 0.30 },
+    { x: mapWidth * 0.85, y: mapHeight * 0.45 },
+    { x: mapWidth * 0.25, y: mapHeight * 0.50 },
+    { x: mapWidth * 0.45, y: mapHeight * 0.60 },
+    { x: mapWidth * 0.65, y: mapHeight * 0.70 },
+    { x: mapWidth * 0.80, y: mapHeight * 0.80 },
+    { x: mapWidth * 0.20, y: mapHeight * 0.75 },
+  ];
 
   return (
     <View style={styles.container}>
-      {/* Informações do vento */}
+      {/* Informações do vento com botão toggle */}
       <View style={styles.windInfo}>
-        <Text style={styles.windTitle}>🌬️ Vento Atual</Text>
+        <View style={styles.windHeader}>
+          <Text style={styles.windTitle}>🌬️ Vento Atual</Text>
+          <TouchableOpacity
+            onPress={() => setShowWindArrows(!showWindArrows)}
+            style={[
+              styles.toggleButton,
+              { backgroundColor: showWindArrows ? '#00BCD4' : '#666' }
+            ]}
+          >
+            <Text style={styles.toggleButtonText}>
+              {showWindArrows ? 'Ocultar' : 'Mostrar'}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.windText}>Direção: {cardinal} ({windData.direction}°)</Text>
         <Text style={styles.windText}>Velocidade: {speedKmh.toFixed(1)} km/h</Text>
         <Text style={styles.windText}>Intensidade: {intensity.description}</Text>
@@ -199,15 +224,18 @@ const WindArrows: React.FC<WindArrowsProps> = ({ lat, lng, mapWidth, mapHeight }
         </Text>
       </View>
 
-      {/* Seta de vento única e maior */}
-      <WindArrow
-        direction={windData.direction}
-        speed={windData.speed}
-        intensity={intensity}
-        x={arrowPosition.x}
-        y={arrowPosition.y}
-        size={80 + windData.speed * 3} // Seta maior, tamanho baseado na velocidade
-      />
+      {/* Múltiplas setas de vento distribuídas - condicionadas ao toggle */}
+      {showWindArrows && arrowPositions.map((pos, index) => (
+        <WindArrow
+          key={index}
+          direction={windData.direction}
+          speed={windData.speed}
+          intensity={intensity}
+          x={pos.x}
+          y={pos.y}
+          size={50 + windData.speed * 2} // Tamanho médio baseado na velocidade
+        />
+      ))}
     </View>
   );
 };
@@ -248,11 +276,26 @@ const styles = StyleSheet.create({
     minWidth: 200,
     zIndex: 1000,
   },
+  windHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   windTitle: {
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
-    marginBottom: 4,
+  },
+  toggleButton: {
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  toggleButtonText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   windText: {
     color: 'white',
