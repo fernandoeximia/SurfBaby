@@ -34,7 +34,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
           const map = new google.maps.Map(mapRef.current, {
             center: coordenadas,
-            zoom: 15.76,
+            zoom: 14.5, // Diminuído de 15.76 para 14.5 para mostrar mais área
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true, // Remove controles padrão para visual mais limpo
             zoomControl: false,

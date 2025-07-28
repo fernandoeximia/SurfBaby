@@ -16,8 +16,8 @@ const MapComponent: React.FC<MapComponentProps> = ({
   const coordenadas = {
     latitude: -22.8948315,
     longitude: -42.0285161,
-    latitudeDelta: 0.006, // Ajustado para zoom 15.76
-    longitudeDelta: 0.006,
+    latitudeDelta: 0.012, // Aumentado de 0.006 para 0.012 para mostrar mais área
+    longitudeDelta: 0.012, // Aumentado de 0.006 para 0.012 para mostrar mais área
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 interface CompassRoseProps {
   size?: number;
@@ -9,45 +9,117 @@ const CompassRose: React.FC<CompassRoseProps> = ({
   size = 80, 
   position = 'top-right' 
 }) => {
-  const getPositionStyle = (): React.CSSProperties => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
+  const compassRef = useRef<HTMLDivElement>(null);
+
+  const getInitialPosition = (): React.CSSProperties => {
     const baseStyle: React.CSSProperties = {
       position: 'absolute',
       zIndex: 1000,
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      backgroundColor: 'transparent', // Fundo transparente
       borderRadius: '50%',
-      padding: '8px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-      border: '2px solid #333',
+      padding: '4px',
+      cursor: isDragging ? 'grabbing' : 'grab',
+      userSelect: 'none',
+      transition: isDragging ? 'none' : 'all 0.2s ease',
     };
 
+    let initialX = 0, initialY = 0;
+    
     switch (position) {
       case 'top-left':
-        return { ...baseStyle, top: '20px', left: '20px' };
+        initialX = 20; initialY = 20;
+        break;
       case 'top-right':
-        return { ...baseStyle, top: '20px', right: '20px' };
+        initialX = -20 - size; initialY = 20;
+        break;
       case 'bottom-left':
-        return { ...baseStyle, bottom: '20px', left: '20px' };
+        initialX = 20; initialY = -20 - size;
+        break;
       case 'bottom-right':
-        return { ...baseStyle, bottom: '20px', right: '20px' };
-      default:
-        return { ...baseStyle, top: '20px', right: '20px' };
+        initialX = -20 - size; initialY = -20 - size;
+        break;
+    }
+
+    return {
+      ...baseStyle,
+      left: currentPosition.x || initialX,
+      top: currentPosition.y || initialY,
+      right: position.includes('right') && !currentPosition.x ? '20px' : 'auto',
+      bottom: position.includes('bottom') && !currentPosition.y ? '20px' : 'auto',
+    };
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    const rect = compassRef.current?.getBoundingClientRect();
+    if (rect) {
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
     }
   };
 
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    const mapContainer = compassRef.current?.parentElement;
+    if (!mapContainer) return;
+    
+    const mapRect = mapContainer.getBoundingClientRect();
+    const newX = e.clientX - mapRect.left - dragOffset.x;
+    const newY = e.clientY - mapRect.top - dragOffset.y;
+    
+    // Limitar dentro dos bounds do mapa
+    const maxX = mapRect.width - size;
+    const maxY = mapRect.height - size;
+    
+    setCurrentPosition({
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragOffset]);
+
   return (
-    <div style={{ ...getPositionStyle(), width: size, height: size }}>
+    <div 
+      ref={compassRef}
+      style={{ ...getInitialPosition(), width: size, height: size }}
+      onMouseDown={handleMouseDown}
+    >
       <svg
-        width={size - 16}
-        height={size - 16}
+        width={size - 8}
+        height={size - 8}
         viewBox="0 0 100 100"
-        style={{ display: 'block' }}
+        style={{ 
+          display: 'block',
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))', // Sombra para melhor visibilidade
+        }}
       >
-        {/* Círculo externo */}
+        {/* Círculo externo com fundo semi-transparente */}
         <circle
           cx="50"
           cy="50"
           r="48"
-          fill="none"
+          fill="rgba(255, 255, 255, 0.1)"
           stroke="#333"
           strokeWidth="2"
         />
@@ -58,7 +130,7 @@ const CompassRose: React.FC<CompassRoseProps> = ({
           cy="50"
           r="35"
           fill="none"
-          stroke="#666"
+          stroke="rgba(102, 102, 102, 0.6)"
           strokeWidth="1"
           strokeDasharray="2,2"
         />
@@ -93,26 +165,26 @@ const CompassRose: React.FC<CompassRoseProps> = ({
         
         {/* Nordeste */}
         <g>
-          <line x1="50" y1="50" x2="75" y2="25" stroke="#666" strokeWidth="1" />
-          <text x="78" y="22" textAnchor="middle" fontSize="8" fill="#666">NE</text>
+          <line x1="50" y1="50" x2="75" y2="25" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
+          <text x="78" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">NE</text>
         </g>
         
         {/* Noroeste */}
         <g>
-          <line x1="50" y1="50" x2="25" y2="25" stroke="#666" strokeWidth="1" />
-          <text x="22" y="22" textAnchor="middle" fontSize="8" fill="#666">NO</text>
+          <line x1="50" y1="50" x2="25" y2="25" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
+          <text x="22" y="22" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">NO</text>
         </g>
         
         {/* Sudeste */}
         <g>
-          <line x1="50" y1="50" x2="75" y2="75" stroke="#666" strokeWidth="1" />
-          <text x="78" y="82" textAnchor="middle" fontSize="8" fill="#666">SE</text>
+          <line x1="50" y1="50" x2="75" y2="75" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
+          <text x="78" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">SE</text>
         </g>
         
         {/* Sudoeste */}
         <g>
-          <line x1="50" y1="50" x2="25" y2="75" stroke="#666" strokeWidth="1" />
-          <text x="22" y="82" textAnchor="middle" fontSize="8" fill="#666">SO</text>
+          <line x1="50" y1="50" x2="25" y2="75" stroke="rgba(102, 102, 102, 0.8)" strokeWidth="1" />
+          <text x="22" y="82" textAnchor="middle" fontSize="8" fill="rgba(102, 102, 102, 0.8)">SO</text>
         </g>
         
         {/* Centro */}
@@ -133,7 +205,7 @@ const CompassRose: React.FC<CompassRoseProps> = ({
               y1={y1}
               x2={x2}
               y2={y2}
-              stroke="#999"
+              stroke="rgba(153, 153, 153, 0.6)"
               strokeWidth="1"
             />
           );
